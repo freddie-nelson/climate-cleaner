@@ -3,6 +3,10 @@
 #include <vector>
 #include <stdexcept>
 #include <string>
+#include <iostream>
+#include <algorithm>
+
+#include "../Physics/Collider2D.h"
 
 #define ECS_SPARSE_SET_MAX_ID 16777215
 #define ECS_SPARSE_SET_DEFAULT_MAX_ID 65535
@@ -153,9 +157,9 @@ namespace ECS
             size_t index = sparse[id];
 
             // swap the item we want to remove with the last item in the dense vector
-            auto last = dense.back();
-            auto lastId = denseIds.back();
             auto lastIndex = dense.size() - 1;
+            auto last = dense[lastIndex];
+            auto lastId = denseIds[lastIndex];
 
             dense[lastIndex] = dense[index];
             denseIds[lastIndex] = denseIds[index];
