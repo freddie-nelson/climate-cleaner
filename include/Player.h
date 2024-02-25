@@ -13,9 +13,14 @@
 #define PLAYER_FRICITON 0.75f
 #define PLAYER_JUMP_FORCE 50.0f
 
-#define GUN_WIDTH 0.1f
-#define GUN_HEIGHT 0.1f
+#define GUN_WIDTH 0.3f
+#define GUN_HEIGHT 0.2f
 #define GUN_POSITION glm::vec2(PLAYER_WIDTH / 2.0f, 0.0f);
+#define GUN_FIRE_RATE 0.2f
+
+#define CROSSHAIR_SIZE 0.08f
+#define CROSSHAIR_GAP 0.1f
+#define CROSSHAIR_COLOR Rendering::Color(0.5f, 0.5f, 0.5f, 1.0f)
 
 #define PLAYER_BULLET_LIFETIME 3.0f
 #define PLAYER_BULLET_SPEED 10.0f
@@ -51,6 +56,7 @@ private:
     GunType m_gunType = NONE;
     ECS::Entity m_gun;
     ECS::Entity m_crosshair;
+    float m_fireTimer = 0.0f;
 
     void makeGun();
     void handleGun(World::World &world, const Core::Timestep &timestep);

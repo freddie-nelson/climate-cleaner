@@ -3,8 +3,8 @@
 #include <remi/Engine.h>
 #include <glm/glm.hpp>
 
-#define FLOOR_WIDTH 10.0f
-#define FLOOR_HEIGHT 10.0f
+#define FLOOR_WIDTH 25.0f
+#define FLOOR_HEIGHT 25.0f
 #define FLOOR_FRICTION 1.0f
 
 class Floor

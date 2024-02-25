@@ -137,6 +137,13 @@ void Player::makeGun()
     if (hasGun)
     {
         registry.destroy(m_gun);
+
+        auto &children = sceneGraph.children(m_crosshair);
+        for (auto child : children)
+        {
+            registry.destroy(child);
+        }
+
         registry.destroy(m_crosshair);
     }
 
@@ -159,11 +166,46 @@ void Player::makeGun()
 
     m_crosshair = registry.create();
     auto &t = registry.add(m_crosshair, Core::Transform());
-    registry.add(m_crosshair, Rendering::Mesh2D(0.1f, 32u));
-    registry.add(m_crosshair, Rendering::Material(Rendering::Color(0.5f, 0.5f, 0.5f, 1.0f)));
-    registry.add(m_crosshair, Rendering::Renderable(true, false));
 
-    t.setZIndex(Config::MAX_Z_INDEX);
+    // left
+    auto left = registry.create();
+    auto &leftT = registry.add(left, Core::Transform(glm::vec2(-CROSSHAIR_GAP, 0.0f)));
+    registry.add(left, Rendering::Mesh2D(CROSSHAIR_SIZE, CROSSHAIR_SIZE / 2.0f));
+    registry.add(left, Rendering::Material(CROSSHAIR_COLOR));
+    registry.add(left, Rendering::Renderable(true, false));
+
+    leftT.setZIndex(Config::MAX_Z_INDEX);
+    sceneGraph.relate(m_crosshair, left);
+
+    // right
+    auto right = registry.create();
+    auto &rightT = registry.add(right, Core::Transform(glm::vec2(CROSSHAIR_GAP, 0.0f)));
+    registry.add(right, Rendering::Mesh2D(CROSSHAIR_SIZE, CROSSHAIR_SIZE / 2.0f));
+    registry.add(right, Rendering::Material(CROSSHAIR_COLOR));
+    registry.add(right, Rendering::Renderable(true, false));
+
+    rightT.setZIndex(Config::MAX_Z_INDEX);
+    sceneGraph.relate(m_crosshair, right);
+
+    // up
+    auto up = registry.create();
+    auto &upT = registry.add(up, Core::Transform(glm::vec2(0.0f, CROSSHAIR_GAP)));
+    registry.add(up, Rendering::Mesh2D(CROSSHAIR_SIZE / 2.0f, CROSSHAIR_SIZE));
+    registry.add(up, Rendering::Material(CROSSHAIR_COLOR));
+    registry.add(up, Rendering::Renderable(true, false));
+
+    upT.setZIndex(Config::MAX_Z_INDEX);
+    sceneGraph.relate(m_crosshair, up);
+
+    // down
+    auto down = registry.create();
+    auto &downT = registry.add(down, Core::Transform(glm::vec2(0.0f, -CROSSHAIR_GAP)));
+    registry.add(down, Rendering::Mesh2D(CROSSHAIR_SIZE / 2.0f, CROSSHAIR_SIZE));
+    registry.add(down, Rendering::Material(CROSSHAIR_COLOR));
+    registry.add(down, Rendering::Renderable(true, false));
+
+    downT.setZIndex(Config::MAX_Z_INDEX);
+    sceneGraph.relate(m_crosshair, down);
 }
 
 void Player::handleGun(World::World &world, const Core::Timestep &timestep)
@@ -172,6 +214,8 @@ void Player::handleGun(World::World &world, const Core::Timestep &timestep)
     {
         return;
     }
+
+    m_fireTimer += timestep.getSeconds();
 
     auto &registry = world.getRegistry();
     auto &sceneGraph = world.getSceneGraph();
@@ -182,9 +226,13 @@ void Player::handleGun(World::World &world, const Core::Timestep &timestep)
 
     auto &gunTransform = registry.get<Core::Transform>(m_gun);
 
-    if (mouse.isPressed(Input::MouseButton::LEFT))
+    gunTransform.setTranslation(glm::vec2(playerToMouseDir * PLAYER_HEIGHT * 0.75f));
+    gunTransform.setRotation(glm::atan(playerToMouseDir.y, playerToMouseDir.x));
+
+    if (mouse.isPressed(Input::MouseButton::LEFT) && m_fireTimer >= GUN_FIRE_RATE)
     {
         auto bullet = new Bullet(m_engine, Core::Transform(sceneGraph.getModelMatrix(m_gun)).getTranslation(), playerToMouseDir, PLAYER_BULLET_SPEED, PLAYER_BULLET_LIFETIME, m_gunType == GUN ? BULLET : FREEZE_BULLET);
+        m_fireTimer = 0.0f;
     }
 }
 

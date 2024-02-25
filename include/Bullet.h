@@ -6,6 +6,10 @@
 #define BULLET_WIDTH 0.2f
 #define BULLET_HEIGHT 0.1f
 
+struct BulletTag
+{
+};
+
 enum BulletType
 {
     BULLET,
@@ -27,6 +31,8 @@ private:
     ECS::Entity m_entity;
     float m_lifeTime;
     BulletType m_bulletType;
+    glm::vec2 m_direction;
+    float m_speed;
 
     Physics::RigidBodyCollisionCallback m_hitCallback = nullptr;
 
