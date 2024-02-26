@@ -25,7 +25,7 @@
 #define CROSSHAIR_COLOR Rendering::Color(0.5f, 0.5f, 0.5f, 1.0f)
 
 #define PLAYER_BULLET_LIFETIME 3.0f
-#define PLAYER_BULLET_SPEED 10.0f
+#define PLAYER_BULLET_SPEED 15.0f
 
 enum GunType
 {
