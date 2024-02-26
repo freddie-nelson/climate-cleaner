@@ -47,12 +47,60 @@ void Bullet::setHitCallback(Physics::RigidBodyCollisionCallback callback)
 
 void Bullet::fixedUpdate(World::World &world, const Core::Timestep &timestep)
 {
+    auto &registry = world.getRegistry();
+
+    if (m_exploding)
+    {
+        if (!m_createdExplosion)
+        {
+            m_explosion = registry.create();
+            registry.add(m_explosion, Core::Transform(registry.get<Core::Transform>(m_entity).getTranslation()));
+            registry.add(m_explosion, Rendering::Mesh2D(EXPLODING_BULLET_STARTING_RADIUS, 32u));
+            registry.add(m_explosion, Rendering::Material(EXPLODING_BULLET_COLOR));
+            registry.add(m_explosion, Rendering::Renderable(true, false));
+
+            auto pos = registry.get<Core::Transform>(m_entity).getTranslation();
+
+            float finalRadius = EXPLODING_BULLET_RADIUS;
+            auto &physicsWorld = *m_engine.getPhysicsWorld();
+
+            auto entities = physicsWorld.query(Core::BoundingCircle(pos, finalRadius));
+            for (auto e : entities)
+            {
+                if (!registry.has<Physics::RigidBody2D>(e))
+                {
+                    continue;
+                }
+
+                auto &body = registry.get<Physics::RigidBody2D>(e);
+                auto &t = registry.get<Core::Transform>(e);
+
+                auto dir = glm::normalize(t.getTranslation() - pos);
+                body.applyForce(dir * static_cast<float>(EXPLODING_BULLET_FORCE));
+            }
+
+            registry.destroy(m_entity);
+            m_createdExplosion = true;
+        }
+
+        auto &transform = registry.get<Core::Transform>(m_explosion);
+        transform.setZIndex(10);
+        transform.scale(EXPLODING_BULLET_SPEED);
+
+        if (transform.getScale().x >= EXPLODING_BULLET_RADIUS / EXPLODING_BULLET_STARTING_RADIUS)
+        {
+            registry.destroy(m_explosion);
+            world.removeSystem(this);
+            delete this;
+        }
+
+        return;
+    }
+
     if (m_lifeTime <= 0)
     {
         return;
     }
-
-    auto &registry = world.getRegistry();
 
     // keep velocity constant
     auto &body = registry.get<Physics::RigidBody2D>(m_entity);
@@ -60,7 +108,7 @@ void Bullet::fixedUpdate(World::World &world, const Core::Timestep &timestep)
 
     m_lifeTime -= timestep.getSeconds();
 
-    if (m_lifeTime <= 0)
+    if (m_lifeTime <= 0 && !m_exploding)
     {
         world.getRegistry().destroy(m_entity);
         world.removeSystem(this);
@@ -85,7 +133,14 @@ void Bullet::callback(const Physics::ContactInfo &contactInfo)
         return;
     }
 
-    registry.destroy(m_entity);
-    world.removeSystem(this);
-    delete this;
+    if (m_bulletType == EXPLODING_BULLET)
+    {
+        m_exploding = true;
+    }
+    else
+    {
+        registry.destroy(m_entity);
+        world.removeSystem(this);
+        delete this;
+    }
 }

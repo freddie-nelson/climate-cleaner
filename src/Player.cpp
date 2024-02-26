@@ -43,7 +43,7 @@ Player::Player(remi::Engine &engine, glm::vec2 position) : m_engine(engine)
     sceneGraph.relate(m_player, m_camera);
     sceneGraph.relate(m_player, m_sprite);
 
-    m_gunType = GUN;
+    m_gunType = ROCKET_LAUNCHER;
     makeGun();
 
     world.addSystem(this);
@@ -231,7 +231,16 @@ void Player::handleGun(World::World &world, const Core::Timestep &timestep)
 
     if (mouse.isPressed(Input::MouseButton::LEFT) && m_fireTimer >= GUN_FIRE_RATE)
     {
-        auto bullet = new Bullet(m_engine, Core::Transform(sceneGraph.getModelMatrix(m_gun)).getTranslation(), playerToMouseDir, PLAYER_BULLET_SPEED, PLAYER_BULLET_LIFETIME, m_gunType == GUN ? BULLET : FREEZE_BULLET);
+        auto normal = glm::vec2(-playerToMouseDir.y, playerToMouseDir.x);
+        auto totalSpread = (GUN_BULLETS - 1) * GUN_BULLET_SPREAD;
+
+        for (size_t i = 0; i < GUN_BULLETS; i++)
+        {
+            auto offset = (normal * (i * GUN_BULLET_SPREAD)) - (normal * totalSpread / 2.0f);
+            auto bullet = new Bullet(m_engine, Core::Transform(sceneGraph.getModelMatrix(m_gun)).getTranslation() + offset, playerToMouseDir, PLAYER_BULLET_SPEED, PLAYER_BULLET_LIFETIME, m_gunType == GUN ? BULLET : m_gunType == FREEZE_GUN ? FREEZE_BULLET
+                                                                                                                                                                                                                                               : EXPLODING_BULLET);
+        }
+
         m_fireTimer = 0.0f;
     }
 }

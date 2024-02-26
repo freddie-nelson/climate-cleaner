@@ -16,7 +16,9 @@
 #define GUN_WIDTH 0.3f
 #define GUN_HEIGHT 0.2f
 #define GUN_POSITION glm::vec2(PLAYER_WIDTH / 2.0f, 0.0f);
-#define GUN_FIRE_RATE 0.2f
+#define GUN_FIRE_RATE 0.05f
+#define GUN_BULLETS 3
+#define GUN_BULLET_SPREAD 0.2f
 
 #define CROSSHAIR_SIZE 0.08f
 #define CROSSHAIR_GAP 0.1f
@@ -30,6 +32,7 @@ enum GunType
     NONE,
     GUN,
     FREEZE_GUN,
+    ROCKET_LAUNCHER,
 };
 
 class Player : public World::System
