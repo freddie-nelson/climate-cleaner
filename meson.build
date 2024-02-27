@@ -69,5 +69,5 @@ if cross_target == 'wasm'
     name_suffix = 'html'
 endif
 
-src = ['main.cpp', 'src/Player.cpp', 'src/Floor.cpp', 'src/Bullet.cpp', 'src/WizardNpc.cpp', 'src/Dialogue.cpp']
+src = ['src/Player.cpp', 'src/Floor.cpp', 'src/Bullet.cpp', 'src/WizardNpc.cpp', 'src/Dialogue.cpp', 'src/Gun.cpp', 'main.cpp']
 executable('main', src, dependencies : dependencies, link_args : link_args, cpp_args : cpp_args, link_with : link_with, name_suffix : name_suffix, include_directories : inc_dirs)

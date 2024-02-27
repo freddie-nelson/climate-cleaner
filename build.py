@@ -1,7 +1,9 @@
 import os
 import shutil
 
-os.system('meson compile -C build')
+exit_code = os.system('meson compile -C build')
+if exit_code != 0:
+    exit(exit_code)
 
 if os.path.exists('build/assets'):
     shutil.rmtree('build/assets')

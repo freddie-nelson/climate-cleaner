@@ -67,7 +67,7 @@ void Bullet::fixedUpdate(World::World &world, const Core::Timestep &timestep)
             auto entities = physicsWorld.query(Core::BoundingCircle(pos, finalRadius));
             for (auto e : entities)
             {
-                if (!registry.has<Physics::RigidBody2D>(e) || registry.has<BulletTag>(e))
+                if (registry.has<BulletTag>(e))
                 {
                     continue;
                 }
