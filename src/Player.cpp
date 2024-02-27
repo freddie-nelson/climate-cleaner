@@ -21,6 +21,7 @@ Player::Player(remi::Engine &engine, glm::vec2 position) : m_engine(engine)
 
     auto &body = registry.add(m_player, Physics::RigidBody2D());
     body.setFixedRotation(true);
+    body.setLinearDamping(PLAYER_DAMPING);
 
     auto playerColliderShape = Physics::PolygonColliderShape2D(Rendering::Mesh2D(PLAYER_WIDTH, PLAYER_HEIGHT));
     auto &collider = registry.add(m_player, Physics::Collider2D(&playerColliderShape));
@@ -80,24 +81,27 @@ void Player::handleMovement(World::World &world, const Core::Timestep &timestep)
     {
         playerBody.applyForce(glm::vec2(-PLAYER_MOVE_FORCE, 0.0f));
     }
-
     if (keyboard.isPressed(Input::Key::D))
     {
         playerBody.applyForce(glm::vec2(PLAYER_MOVE_FORCE, 0.0f));
     }
 
+    if (keyboard.isPressed(Input::Key::W))
+    {
+        playerBody.applyForce(glm::vec2(0.0f, PLAYER_MOVE_FORCE));
+    }
+    if (keyboard.isPressed(Input::Key::S))
+    {
+        playerBody.applyForce(glm::vec2(0.0f, -PLAYER_MOVE_FORCE));
+    }
+
     // clamp player speed
     auto velocity = playerBody.getVelocity();
-
     float maxSpeed = keyboard.isPressed(Input::Key::LEFT_SHIFT) ? MAX_PLAYER_SPRINT_SPEED : MAX_PLAYER_SPEED;
 
-    if (velocity.x > maxSpeed)
+    if (glm::length(velocity) > maxSpeed)
     {
-        velocity.x = maxSpeed;
-    }
-    else if (velocity.x < -maxSpeed)
-    {
-        velocity.x = -maxSpeed;
+        velocity = glm::normalize(velocity) * maxSpeed;
     }
 
     playerBody.setVelocity(velocity);

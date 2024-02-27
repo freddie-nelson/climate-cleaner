@@ -44,7 +44,6 @@ void Dialogue::update(World::World &world, const Core::Timestep &timestep)
         if (m_dialogue.empty())
         {
             world.removeSystem(this);
-            delete this;
             return;
         }
 
@@ -61,8 +60,6 @@ void Dialogue::stop()
 
     m_endDialogueCallback = nullptr;
     m_beginDialogueCallback = nullptr;
-
-    delete this;
 }
 
 void Dialogue::setBeginDialogueCallback(std::function<void(DialogueOption, bool)> callback)

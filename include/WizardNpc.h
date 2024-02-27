@@ -8,7 +8,7 @@
 #define WIZARD_DIALOGUE_POSITION glm::vec2(0, 1.5f)
 #define WIZARD_WIDTH 0.5f
 #define WIZARD_HEIGHT 1.0f
-#define WIZARD_COLOR Rendering::Color(0.5f, 0.0f, 1.0f, 1.0f)
+#define WIZARD_COLOR Rendering::Color(0.6f, 0.0f, 0.7f, 1.0f)
 
 class WizardNpc : public World::System
 {
@@ -28,7 +28,7 @@ private:
     bool m_dialogueStarted = false;
     bool m_dialogueFinished = false;
 
-    Dialogue *m_dialogue = nullptr; 
+    Dialogue *m_dialogue = nullptr;
 
     const std::vector<DialogueOption> m_dialogueOptions =
         {
@@ -36,6 +36,6 @@ private:
             {"Wizard", "You are here to discover how to save the world.", 3.0f, 1.0f},
             {"Wizard", "You must discover the places where the climate is dying.", 3.0f, 1.0f},
             {"Wizard", "And save them to unlock some climate change knowledge", 3.0f, 1.0f},
-            {"Wizard", "Press 'F' to start your journey!", 10.0f, 1.0f},
+            {"Wizard", "Press 'F' to start your journey!", 60.0f, 1.0f},
         };
 };

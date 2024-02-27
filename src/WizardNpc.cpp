@@ -21,6 +21,7 @@ WizardNpc::WizardNpc(remi::Engine &engine, glm::vec2 position) : m_engine(engine
 
     auto &body = registry.add(m_wizardNpc, Physics::RigidBody2D());
     body.setFixedRotation(true);
+    body.setLinearDamping(2.0f);
 
     auto wizardColliderShape = Physics::PolygonColliderShape2D(Rendering::Mesh2D(WIZARD_WIDTH, WIZARD_HEIGHT));
     auto &collider = registry.add(m_wizardNpc, Physics::Collider2D(&wizardColliderShape));
@@ -52,6 +53,7 @@ void WizardNpc::update(World::World &world, const Core::Timestep &timestep)
         if (keyboard.isPressed(Input::Key::F))
         {
             m_dialogue->stop();
+            delete m_dialogue;
             m_dialogue = nullptr;
 
             std::cout << "F pressed" << std::endl;

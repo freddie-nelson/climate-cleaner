@@ -11,13 +11,12 @@ int main()
 
     // create engine
     remi::EngineConfig config;
+    config.physicsWorldConfig.gravity = glm::vec2(0);
+
     remi::Engine engine(config);
 
     auto &renderer = *engine.getRenderer();
-    renderer.setClearColor(Rendering::Color(0.5f, 0.8f, 0.9f, 1.0f));
-
-    // create floor
-    Floor floor(engine, glm::vec2(0, -5));
+    renderer.setClearColor(Rendering::Color(0, 0.5f, 0.0f, 1.0f));
 
     // create player
     Player player(engine);
