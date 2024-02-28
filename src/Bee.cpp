@@ -6,6 +6,8 @@
 #include <remi/Rendering/Mesh/Mesh.h>
 #include <remi/Rendering/Material/Material.h>
 
+Rendering::Texture Bee::texture = Rendering::Texture("assets/images/bee.png");
+
 Bee::Bee(remi::Engine &engine, ECS::Entity target, glm::vec2 position)
     : Enemy(engine, target, position)
 {
@@ -64,6 +66,11 @@ void Bee::takeDamage(float damage)
     healthBarTag.health -= damage;
 
     Enemy::takeDamage(damage);
+
+    if (isDead())
+    {
+        registry.destroy(m_shadow);
+    }
 }
 
 void Bee::makeEnemy()
@@ -77,10 +84,12 @@ void Bee::makeEnemy()
     registry.add<EnemyTag>(m_enemy, EnemyTag{this});
 
     auto &mesh = registry.add<Rendering::Mesh2D>(m_enemy, Rendering::Mesh2D(BEE_WIDTH, BEE_HEIGHT));
-    registry.add<Rendering::Material>(m_enemy, Rendering::Material(m_color));
+    auto &material = registry.add<Rendering::Material>(m_enemy, Rendering::Material(m_color));
+    material.setTexture(&Bee::texture);
+
     registry.add(m_enemy, Rendering::Renderable(true, false));
 
-    auto shape = Physics::PolygonColliderShape2D(mesh);
+    auto shape = Physics::PolygonColliderShape2D(Rendering::Mesh2D(BEE_WIDTH, BEE_HEIGHT * 0.75f));
     auto &collider = registry.add<Physics::Collider2D>(m_enemy, Physics::Collider2D(&shape));
     collider.setDensity(BEE_DENSITY);
 
@@ -89,6 +98,17 @@ void Bee::makeEnemy()
 
     auto &healthBarTag = registry.add<HealthBarTag>(m_enemy, HealthBarTag{BEE_HEALTH, BEE_HEALTH});
     m_healthBar = new HealthBar(m_engine, m_enemy, glm::vec2(0, BEE_HEIGHT / 2 + 0.25f));
+
+    // shadow
+    m_shadow = registry.create();
+    auto &shadowT = registry.add(m_shadow, Core::Transform(BEE_SHADOW_POSITION));
+    shadowT.setScale(BEE_SHADOW_SCALE);
+
+    registry.add(m_shadow, Rendering::Mesh2D(BEE_WIDTH / 2.0f, 32u));
+    registry.add(m_shadow, Rendering::Material(BEE_SHADOW_COLOR));
+    registry.add(m_shadow, Rendering::Renderable(true, false));
+
+    sceneGraph.relate(m_enemy, m_shadow);
 }
 
 void Bee::moveEnemy(World::World &world, const Core::Timestep &timestep)

@@ -45,13 +45,17 @@ void EnemySpawner::spawnBee(World::World &world, const Core::Timestep &timestep)
     float x = radius * cos(angle);
     float y = radius * sin(angle);
 
+    auto &registry = world.getRegistry();
+    auto &sceneGraph = world.getSceneGraph();
+    auto transform = Core::Transform(sceneGraph.getModelMatrix(m_target));
+
     m_lastBeeSpawn = m_spawnTimer;
-    m_enemies.emplace(new Bee(m_engine, m_target, glm::vec2(x, y)));
+    m_enemies.emplace(new Bee(m_engine, m_target, glm::vec2(x, y) + transform.getTranslation()));
 
     // std::cout << "Spawned bee at (" << x << ", " << y << ")" << std::endl;
 }
 
 double EnemySpawner::getBeeSpawnRate()
 {
-    return 2.0;
+    return 1.0;
 }
