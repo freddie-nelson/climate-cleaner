@@ -13,6 +13,10 @@
 #define PLAYER_FRICITON 0.75f
 #define PLAYER_JUMP_FORCE 50.0f
 #define PLAYER_DAMPING 5.0f
+#define PLAYER_HEALTH 100.0f
+#define PLAYER_COLOR Rendering::Color(1.0f, 1.0f, 1.0f, 1.0f)
+#define PLAYER_HIT_COLOR Rendering::Color(1.0f, 0.0f, 0.0f, 1.0f)
+#define PLAYER_HIT_DURATION 0.1f
 
 class Player : public World::System
 {
@@ -25,8 +29,13 @@ public:
 
     ECS::Entity getEntity() const { return m_player; }
 
+    void takeDamage(float damage);
+
 private:
     remi::Engine &m_engine;
+
+    float m_hitTimer = 0.0f;
+    float m_health = PLAYER_HEALTH;
 
     ECS::Entity m_player;
     ECS::Entity m_sprite;
@@ -36,4 +45,9 @@ private:
 
     bool hasGun = false;
     Gun *m_gun = nullptr;
+};
+
+struct PlayerTag
+{
+    Player *player;
 };

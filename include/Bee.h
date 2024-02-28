@@ -11,6 +11,9 @@
 #define BEE_HEIGHT 0.5f
 #define BEE_KNOCKBACK_RESISTANCE 0.1f
 #define BEE_COLOR Rendering::Color(0.9f, 0.7f, 0.1f, 1.0f)
+#define BEE_HIT_COLOR Rendering::Color(1.0f, 0.0f, 0.0f, 1.0f)
+#define BEE_FREEZE_DURATION 0.5f
+#define BEE_FREEZE_COLOR Rendering::Color(0.0f, 0.5f, 1.0f, 1.0f)
 
 class Bee : public Enemy
 {
@@ -19,9 +22,18 @@ public:
 
     void fixedUpdate(World::World &world, const Core::Timestep &timestep) override;
 
+    void takeDamage(float damage) override;
+
+    void freeze() override;
+
 protected:
+    Rendering::Color m_color = BEE_COLOR;
+    float m_freezeTimer = 0.0f;
     float m_health = BEE_HEALTH;
     float m_knockbackResistance = BEE_KNOCKBACK_RESISTANCE;
+
+    float m_hitTime = 0.0f;
+    float m_hitDuration = 0.1f;
 
     void makeEnemy() override;
 

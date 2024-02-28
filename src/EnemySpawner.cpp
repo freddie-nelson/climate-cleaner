@@ -53,5 +53,5 @@ void EnemySpawner::spawnBee(World::World &world, const Core::Timestep &timestep)
 
 double EnemySpawner::getBeeSpawnRate()
 {
-    return 1.0;
+    return 2.0;
 }

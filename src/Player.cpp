@@ -17,6 +17,7 @@ Player::Player(remi::Engine &engine, glm::vec2 position) : m_engine(engine)
 
     // create player
     m_player = registry.create();
+    registry.add(m_player, PlayerTag{this});
     registry.add(m_player, Core::Transform(position));
 
     auto &body = registry.add(m_player, Physics::RigidBody2D());
@@ -52,6 +53,32 @@ Player::Player(remi::Engine &engine, glm::vec2 position) : m_engine(engine)
 void Player::fixedUpdate(World::World &world, const Core::Timestep &timestep)
 {
     handleMovement(world, timestep);
+
+    // material
+    auto &registry = world.getRegistry();
+    auto &material = registry.get<Rendering::Material>(m_sprite);
+
+    if (m_hitTimer > 0)
+    {
+        m_hitTimer -= timestep.getSeconds();
+
+        material.setColor(PLAYER_HIT_COLOR);
+    }
+    else
+    {
+        material.setColor(PLAYER_COLOR);
+    }
+}
+
+void Player::takeDamage(float damage)
+{
+    m_health -= damage;
+    m_hitTimer = PLAYER_HIT_DURATION;
+
+    if (m_health <= 0)
+    {
+        std::cout << "Player died" << std::endl;
+    }
 }
 
 void Player::handleMovement(World::World &world, const Core::Timestep &timestep)

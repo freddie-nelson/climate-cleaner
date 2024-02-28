@@ -142,6 +142,11 @@ void Bullet::callback(const Physics::ContactInfo &contactInfo)
         auto &enemy = *registry.get<EnemyTag>(contactInfo.entityB).enemy;
         enemy.knockback(glm::normalize(body.getVelocity()), getBulletKnockback());
         enemy.takeDamage(getBulletDamage());
+
+        if (m_bulletType == FREEZE_BULLET)
+        {
+            enemy.freeze();
+        }
     }
 
     if (m_bulletType == EXPLODING_BULLET)
@@ -176,9 +181,9 @@ float Bullet::getBulletKnockback() const
     switch (m_bulletType)
     {
     case BULLET:
-        return 500.0f;
+        return 1000.0f;
     case FREEZE_BULLET:
-        return 100.0f;
+        return 250.0f;
     case EXPLODING_BULLET:
         return 500.0f;
     default:
