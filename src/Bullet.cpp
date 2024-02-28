@@ -69,7 +69,7 @@ void Bullet::fixedUpdate(World::World &world, const Core::Timestep &timestep)
             auto entities = physicsWorld.query(Core::BoundingCircle(pos, finalRadius));
             for (auto e : entities)
             {
-                if (registry.has<BulletTag>(e))
+                if (registry.has<BulletTag>(e) || !registry.has<EnemyTag>(e))
                 {
                     continue;
                 }
@@ -79,6 +79,10 @@ void Bullet::fixedUpdate(World::World &world, const Core::Timestep &timestep)
 
                 auto dir = glm::normalize(t.getTranslation() - pos);
                 body.applyForce(dir * static_cast<float>(EXPLODING_BULLET_FORCE));
+
+                auto &enemy = *registry.get<EnemyTag>(e).enemy;
+                enemy.knockback(dir, getBulletKnockback());
+                enemy.takeDamage(getBulletDamage());
             }
 
             registry.destroy(m_entity);

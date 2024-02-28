@@ -1,5 +1,6 @@
 #include "../include/HealthBar.h"
 
+#include <math.h>
 #include <remi/Rendering/Renderable.h>
 #include <remi/Rendering/Mesh/Mesh.h>
 #include <remi/Rendering/Material/Material.h>
@@ -14,14 +15,17 @@ HealthBar::HealthBar(remi::Engine &engine, ECS::Entity owner, glm::vec2 position
     m_bar = registry.create();
 
     auto &t = registry.add(m_bar, Core::Transform());
-    t.setZIndex(1);
+    t.setZIndex(2);
 
     registry.add(m_bar, Rendering::Mesh2D(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT));
     registry.add(m_bar, Rendering::Material(HEALTH_BAR_COLOR));
     registry.add(m_bar, Rendering::Renderable(true, false));
 
     m_container = registry.create();
-    registry.add(m_container, Core::Transform(position));
+
+    auto &containerT = registry.add(m_container, Core::Transform(position));
+    containerT.setZIndex(1);
+
     registry.add(m_container, Rendering::Mesh2D(HEALTH_BAR_WIDTH + HEALTH_BAR_BORDER_SIZE * 2, HEALTH_BAR_HEIGHT + HEALTH_BAR_BORDER_SIZE * 2));
     registry.add(m_container, Rendering::Material(HEALTH_BAR_BACKGROUND_COLOR));
     registry.add(m_container, Rendering::Renderable(true, false));
@@ -47,7 +51,7 @@ void HealthBar::fixedUpdate(World::World &world, const Core::Timestep &timestep)
     }
 
     auto &healthBarTag = registry.get<HealthBarTag>(m_owner);
-    float healthPercentage = healthBarTag.health / healthBarTag.maxHealth;
+    float healthPercentage = std::fmax(0, healthBarTag.health / healthBarTag.maxHealth);
 
     auto &t = registry.get<Core::Transform>(m_bar);
     t.setScale(glm::vec2(healthPercentage, 1.0f));
