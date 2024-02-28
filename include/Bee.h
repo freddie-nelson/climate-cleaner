@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Enemy.h"
+#include "HealthBar.h"
 
 #define BEE_HEALTH 10.0f
 #define BEE_DAMPING 3.0f
@@ -27,6 +28,8 @@ public:
     void freeze() override;
 
 protected:
+    HealthBar *m_healthBar = nullptr;
+
     Rendering::Color m_color = BEE_COLOR;
     float m_freezeTimer = 0.0f;
     float m_health = BEE_HEALTH;

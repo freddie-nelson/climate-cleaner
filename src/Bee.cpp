@@ -50,10 +50,18 @@ void Bee::freeze()
     m_freezeTimer = BEE_FREEZE_DURATION;
 }
 
+#include <iostream>
+
 void Bee::takeDamage(float damage)
 {
     m_hitTime = m_hitDuration;
     m_color = BEE_HIT_COLOR;
+
+    auto &world = *m_engine.getWorld();
+    auto &registry = world.getRegistry();
+
+    auto &healthBarTag = registry.get<HealthBarTag>(m_enemy);
+    healthBarTag.health -= damage;
 
     Enemy::takeDamage(damage);
 }
@@ -78,6 +86,9 @@ void Bee::makeEnemy()
 
     auto &body = registry.add<Physics::RigidBody2D>(m_enemy, Physics::RigidBody2D());
     body.setLinearDamping(BEE_DAMPING);
+
+    auto &healthBarTag = registry.add<HealthBarTag>(m_enemy, HealthBarTag{BEE_HEALTH, BEE_HEALTH});
+    m_healthBar = new HealthBar(m_engine, m_enemy, glm::vec2(0, BEE_HEIGHT / 2 + 0.25f));
 }
 
 void Bee::moveEnemy(World::World &world, const Core::Timestep &timestep)

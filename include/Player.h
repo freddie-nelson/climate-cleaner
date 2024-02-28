@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Gun.h"
+#include "HealthBar.h"
 
 #include <remi/Engine.h>
 #include <glm/glm.hpp>
@@ -33,6 +34,8 @@ public:
 
 private:
     remi::Engine &m_engine;
+
+    HealthBar *m_healthBar = nullptr;
 
     float m_hitTimer = 0.0f;
     float m_health = PLAYER_HEALTH;

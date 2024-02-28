@@ -48,6 +48,10 @@ Player::Player(remi::Engine &engine, glm::vec2 position) : m_engine(engine)
     world.addSystem(this);
 
     switchGun(GunType::GUN);
+
+    registry.add(m_player, HealthBarTag{PLAYER_HEALTH, PLAYER_HEALTH});
+
+    m_healthBar = new HealthBar(engine, m_player, glm::vec2(0, PLAYER_HEIGHT / 2 + 0.25f));
 }
 
 void Player::fixedUpdate(World::World &world, const Core::Timestep &timestep)
@@ -74,6 +78,9 @@ void Player::takeDamage(float damage)
 {
     m_health -= damage;
     m_hitTimer = PLAYER_HIT_DURATION;
+
+    auto &healthBarTag = m_engine.getWorld()->getRegistry().get<HealthBarTag>(m_player);
+    healthBarTag.health = m_health;
 
     if (m_health <= 0)
     {
