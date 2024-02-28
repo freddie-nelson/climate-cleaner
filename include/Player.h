@@ -23,6 +23,8 @@ public:
 
     void switchGun(GunType gunType);
 
+    ECS::Entity getEntity() const { return m_player; }
+
 private:
     remi::Engine &m_engine;
 

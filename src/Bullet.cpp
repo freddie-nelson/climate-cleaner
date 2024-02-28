@@ -1,5 +1,7 @@
 #include "../include/Bullet.h"
+#include "../include/Enemy.h"
 
+#include <stdexcept>
 #include <remi/Physics/RigidBody2D.h>
 #include <remi/Physics/Collider2D.h>
 #include <remi/Rendering/Mesh/Mesh.h>
@@ -133,6 +135,15 @@ void Bullet::callback(const Physics::ContactInfo &contactInfo)
         return;
     }
 
+    auto &body = registry.get<Physics::RigidBody2D>(m_entity);
+
+    if (registry.has<EnemyTag>(contactInfo.entityB))
+    {
+        auto &enemy = *registry.get<EnemyTag>(contactInfo.entityB).enemy;
+        enemy.knockback(glm::normalize(body.getVelocity()), getBulletKnockback());
+        enemy.takeDamage(getBulletDamage());
+    }
+
     if (m_bulletType == EXPLODING_BULLET)
     {
         m_exploding = true;
@@ -142,5 +153,35 @@ void Bullet::callback(const Physics::ContactInfo &contactInfo)
         registry.destroy(m_entity);
         world.removeSystem(this);
         delete this;
+    }
+}
+
+float Bullet::getBulletDamage() const
+{
+    switch (m_bulletType)
+    {
+    case BULLET:
+        return 2.5f;
+    case FREEZE_BULLET:
+        return 3.0f;
+    case EXPLODING_BULLET:
+        return 4.0f;
+    default:
+        throw std::runtime_error("Invalid bullet type");
+    }
+}
+
+float Bullet::getBulletKnockback() const
+{
+    switch (m_bulletType)
+    {
+    case BULLET:
+        return 500.0f;
+    case FREEZE_BULLET:
+        return 100.0f;
+    case EXPLODING_BULLET:
+        return 500.0f;
+    default:
+        throw std::runtime_error("Invalid bullet type");
     }
 }

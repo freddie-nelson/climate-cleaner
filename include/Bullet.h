@@ -48,4 +48,8 @@ private:
     Physics::RigidBodyCollisionCallback m_hitCallback = nullptr;
 
     void callback(const Physics::ContactInfo &contactInfo);
+
+    float getBulletDamage() const;
+
+    float getBulletKnockback() const;
 };

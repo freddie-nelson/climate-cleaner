@@ -1,6 +1,7 @@
 #include "include/Player.h"
 #include "include/Floor.h"
 #include "include/WizardNpc.h"
+#include "include/EnemySpawner.h"
 
 #include <remi/Engine.h>
 #include <remi/Rendering/Texture/TextureAtlas.h>
@@ -22,7 +23,7 @@ int main()
     Player player(engine);
 
     // create wizard npc
-    WizardNpc wizardNpc(engine, glm::vec2(0, 0));
+    EnemySpawner spawner(engine, player.getEntity());
 
     // run engine
     engine.run();
