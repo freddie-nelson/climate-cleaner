@@ -61,7 +61,7 @@ void Gun::makeGun()
     m_gun = registry.create();
     registry.add(m_gun, Core::Transform());
     registry.add(m_gun, Rendering::Mesh2D(GUN_WIDTH, GUN_HEIGHT));
-    registry.add(m_gun, Rendering::Material(Rendering::Color(0.5f, 0.5f, 0.5f, 1.0f)));
+    registry.add(m_gun, Rendering::Material(Rendering::Color(0.5f, 0.5f, 0.5f, 1.0f), getGunTexture()));
     registry.add(m_gun, Rendering::Renderable(true, false));
 
     sceneGraph.relate(m_holder, m_gun);
@@ -89,19 +89,34 @@ void Gun::updateGun(const Core::Timestep &timestep)
 
     auto &gunTransform = registry.get<Core::Transform>(m_gun);
 
-    gunTransform.setTranslation(glm::vec2(holderToMouseDir * m_holderHeight * 0.75f));
-    gunTransform.setRotation(glm::atan(holderToMouseDir.y, holderToMouseDir.x));
+    // flip in direction of fire
+    auto normal = glm::vec2(-holderToMouseDir.y, holderToMouseDir.x);
+    auto barrelOffset = GUN_BARREL_OFFSET * normal;
+
+    if (glm::dot(holderToMouseDir, glm::vec2(1, 0)) >= 0)
+    {
+        // facing right
+        gunTransform.setScale(glm::vec2(1.0f, 1.0f));
+        gunTransform.setRotation(glm::atan(holderToMouseDir.y, holderToMouseDir.x));
+    }
+    else
+    {
+        gunTransform.setScale(glm::vec2(1.0f, -1.0f));
+        gunTransform.setRotation(-glm::atan(holderToMouseDir.y, holderToMouseDir.x));
+        barrelOffset *= -1.2f;
+    }
+
+    gunTransform.setTranslation(glm::vec2(holderToMouseDir * m_holderHeight * 0.65f));
 
     if (mouse.isPressed(Input::MouseButton::LEFT) && m_fireTimer >= GUN_FIRE_RATE)
     {
-        auto normal = glm::vec2(-holderToMouseDir.y, holderToMouseDir.x);
         auto totalSpread = (GUN_BULLETS - 1) * GUN_BULLET_SPREAD;
 
         for (size_t i = 0; i < GUN_BULLETS; i++)
         {
             auto offset = (normal * (i * GUN_BULLET_SPREAD)) - (normal * totalSpread / 2.0f);
-            auto bullet = new Bullet(m_engine, Core::Transform(sceneGraph.getModelMatrix(m_gun)).getTranslation() + offset, holderToMouseDir, BULLET_SPEED, BULLET_LIFETIME, m_gunType == GUN ? BULLET : m_gunType == FREEZE_GUN ? FREEZE_BULLET
-                                                                                                                                                                                                                                 : EXPLODING_BULLET);
+            auto bullet = new Bullet(m_engine, Core::Transform(sceneGraph.getModelMatrix(m_gun)).getTranslation() + offset + barrelOffset, holderToMouseDir, BULLET_SPEED, BULLET_LIFETIME, m_gunType == GUN ? BULLET : m_gunType == FREEZE_GUN ? FREEZE_BULLET
+                                                                                                                                                                                                                                                : EXPLODING_BULLET);
         }
 
         m_fireTimer = 0.0f;
@@ -216,4 +231,15 @@ glm::vec2 Gun::getWorldMousePosition(World::World &world)
     auto worldMousePos = spaceTransformer.transform(screenMousePos, Core::SpaceTransformer::Space::SCREEN, Core::SpaceTransformer::Space::WORLD);
 
     return worldMousePos;
+}
+
+Rendering::Texture *Gun::getGunTexture()
+{
+    switch (m_gunType)
+    {
+    case GunType::GUN:
+        return &m_gunTexture;
+    default:
+        throw std::runtime_error("gun type not implemented");
+    }
 }

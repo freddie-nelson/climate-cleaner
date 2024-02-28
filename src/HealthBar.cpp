@@ -6,7 +6,7 @@
 #include <remi/Rendering/Material/Material.h>
 #include <remi/Core/Transform.h>
 
-HealthBar::HealthBar(remi::Engine &engine, ECS::Entity owner, glm::vec2 position) : m_engine(engine), m_owner(owner)
+HealthBar::HealthBar(remi::Engine &engine, ECS::Entity owner, glm::vec2 position, glm::vec2 scale) : m_engine(engine), m_owner(owner)
 {
     auto &world = *m_engine.getWorld();
     auto &registry = world.getRegistry();
@@ -25,6 +25,7 @@ HealthBar::HealthBar(remi::Engine &engine, ECS::Entity owner, glm::vec2 position
 
     auto &containerT = registry.add(m_container, Core::Transform(position));
     containerT.setZIndex(1);
+    containerT.setScale(scale);
 
     registry.add(m_container, Rendering::Mesh2D(HEALTH_BAR_WIDTH + HEALTH_BAR_BORDER_SIZE * 2, HEALTH_BAR_HEIGHT + HEALTH_BAR_BORDER_SIZE * 2));
     registry.add(m_container, Rendering::Material(HEALTH_BAR_BACKGROUND_COLOR));

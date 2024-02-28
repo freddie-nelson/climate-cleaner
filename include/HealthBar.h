@@ -17,7 +17,7 @@ struct HealthBarTag
 class HealthBar : public World::System
 {
 public:
-    HealthBar(remi::Engine &engine, ECS::Entity owner, glm::vec2 position);
+    HealthBar(remi::Engine &engine, ECS::Entity owner, glm::vec2 position, glm::vec2 scale = glm::vec2(1));
 
     void fixedUpdate(World::World &world, const Core::Timestep &timestep) override;
 

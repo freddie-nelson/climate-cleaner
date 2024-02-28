@@ -1,4 +1,5 @@
 #include "../include/Bee.h"
+#include "../include/HelperEntities.h"
 
 #include <remi/Physics/RigidBody2d.h>
 #include <remi/Physics/Collider2d.h>
@@ -95,20 +96,13 @@ void Bee::makeEnemy()
 
     auto &body = registry.add<Physics::RigidBody2D>(m_enemy, Physics::RigidBody2D());
     body.setLinearDamping(BEE_DAMPING);
+    body.setFixedRotation(true);
 
     auto &healthBarTag = registry.add<HealthBarTag>(m_enemy, HealthBarTag{BEE_HEALTH, BEE_HEALTH});
     m_healthBar = new HealthBar(m_engine, m_enemy, glm::vec2(0, BEE_HEIGHT / 2 + 0.25f));
 
     // shadow
-    m_shadow = registry.create();
-    auto &shadowT = registry.add(m_shadow, Core::Transform(BEE_SHADOW_POSITION));
-    shadowT.setScale(BEE_SHADOW_SCALE);
-
-    registry.add(m_shadow, Rendering::Mesh2D(BEE_WIDTH / 2.0f, 32u));
-    registry.add(m_shadow, Rendering::Material(BEE_SHADOW_COLOR));
-    registry.add(m_shadow, Rendering::Renderable(true, false));
-
-    sceneGraph.relate(m_enemy, m_shadow);
+    m_shadow = createShadow(world, m_enemy, BEE_SHADOW_POSITION, BEE_WIDTH / 2.0f, BEE_SHADOW_SCALE);
 }
 
 void Bee::moveEnemy(World::World &world, const Core::Timestep &timestep)

@@ -3,13 +3,15 @@
 #include "Bullet.h"
 
 #include <remi/Engine.h>
+#include <remi/Rendering/Texture/Texture.h>
 
-#define GUN_WIDTH 0.3f
-#define GUN_HEIGHT 0.2f
+#define GUN_WIDTH 0.4f
+#define GUN_HEIGHT 0.4f
 #define GUN_POSITION glm::vec2(PLAYER_WIDTH / 2.0f, 0.0f);
 #define GUN_FIRE_RATE 0.15f
 #define GUN_BULLETS 1
 #define GUN_BULLET_SPREAD 0.2f
+#define GUN_BARREL_OFFSET 0.1f
 
 #define CROSSHAIR_SIZE 0.08f
 #define CROSSHAIR_GAP 0.1f
@@ -70,4 +72,8 @@ private:
 
     glm::vec2 getHolderToMouse(World::World &world);
     glm::vec2 getWorldMousePosition(World::World &world);
+
+    Rendering::Texture m_gunTexture = Rendering::Texture("assets/images/gun.png");
+
+    Rendering::Texture *getGunTexture();
 };

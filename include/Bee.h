@@ -8,14 +8,13 @@
 #define BEE_DENSITY 1.0f
 #define BEE_SPEED 2.5f
 #define BEE_MOVE_FORCE 20.0f
-#define BEE_WIDTH 0.85f
-#define BEE_HEIGHT 0.85f
+#define BEE_WIDTH 1.0f
+#define BEE_HEIGHT 1.0f
 #define BEE_KNOCKBACK_RESISTANCE 0.1f
 #define BEE_COLOR Rendering::Color(1.0f, 1.0f, 1.0f, 1.0f)
 #define BEE_HIT_COLOR Rendering::Color(1.0f, 0.0f, 0.0f, 1.0f)
 #define BEE_FREEZE_DURATION 0.5f
 #define BEE_FREEZE_COLOR Rendering::Color(0.0f, 0.5f, 1.0f, 1.0f)
-#define BEE_SHADOW_COLOR Rendering::Color(0.0f, 0.0f, 0.0f, 0.4f)
 #define BEE_SHADOW_POSITION glm::vec2(0.0f, -BEE_HEIGHT * 0.7f)
 #define BEE_SHADOW_SCALE glm::vec2(0.5f, 0.25f)
 

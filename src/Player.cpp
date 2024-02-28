@@ -1,4 +1,5 @@
 #include "../include/Player.h"
+#include "../include/HelperEntities.h"
 
 #include <remi/Rendering/Camera/Camera.h>
 #include <remi/Rendering/Camera/ActiveCamera.h>
@@ -24,7 +25,7 @@ Player::Player(remi::Engine &engine, glm::vec2 position) : m_engine(engine)
     body.setFixedRotation(true);
     body.setLinearDamping(PLAYER_DAMPING);
 
-    auto playerColliderShape = Physics::PolygonColliderShape2D(Rendering::Mesh2D(PLAYER_WIDTH, PLAYER_HEIGHT));
+    auto playerColliderShape = Physics::CircleColliderShape2D(PLAYER_WIDTH * 0.3f);
     auto &collider = registry.add(m_player, Physics::Collider2D(&playerColliderShape));
     collider.setFriction(PLAYER_FRICITON);
 
@@ -32,7 +33,7 @@ Player::Player(remi::Engine &engine, glm::vec2 position) : m_engine(engine)
     m_sprite = registry.create();
     registry.add(m_sprite, Core::Transform());
     registry.add(m_sprite, Rendering::Mesh2D(PLAYER_WIDTH, PLAYER_HEIGHT));
-    registry.add(m_sprite, Rendering::Material());
+    registry.add(m_sprite, Rendering::Material(&m_texture));
     registry.add(m_sprite, Rendering::Renderable(true, false));
 
     // create camera
@@ -51,7 +52,9 @@ Player::Player(remi::Engine &engine, glm::vec2 position) : m_engine(engine)
 
     registry.add(m_player, HealthBarTag{PLAYER_HEALTH, PLAYER_HEALTH});
 
-    m_healthBar = new HealthBar(engine, m_player, glm::vec2(0, PLAYER_HEIGHT / 2 + 0.25f));
+    m_healthBar = new HealthBar(engine, m_player, glm::vec2(0, PLAYER_HEIGHT / 2), glm::vec2(1.25f, 1.0f));
+
+    m_shadow = createShadow(world, m_player, PLAYER_SHADOW_POSITION, PLAYER_WIDTH / 2.0f, PLAYER_SHADOW_SCALE);
 }
 
 void Player::fixedUpdate(World::World &world, const Core::Timestep &timestep)
@@ -71,6 +74,18 @@ void Player::fixedUpdate(World::World &world, const Core::Timestep &timestep)
     else
     {
         material.setColor(PLAYER_COLOR);
+    }
+
+    auto &body = registry.get<Physics::RigidBody2D>(m_player);
+    auto &transform = registry.get<Core::Transform>(m_sprite);
+
+    if (body.getVelocityX() < 0)
+    {
+        transform.setScale(glm::vec2(1, 1));
+    }
+    else
+    {
+        transform.setScale(glm::vec2(-1, 1));
     }
 }
 
@@ -132,25 +147,6 @@ void Player::handleMovement(World::World &world, const Core::Timestep &timestep)
     }
 
     playerBody.setVelocity(velocity);
-
-    // jump
-
-    // check if player is grounded
-    auto origin = spaceTransformer.transform(playerTransform.getTranslation(), m_player, Core::SpaceTransformer::Space::LOCAL, Core::SpaceTransformer::Space::WORLD);
-    auto direction = glm::vec2(0, -1);
-    auto length = PLAYER_HEIGHT / 2.0f + 0.1f;
-    Physics::Ray ray(origin, direction, length);
-
-    auto results = physicsWorld.raycast(ray, Physics::RaycastType::ANY);
-
-    // player is grounded so can jump
-    if (results.size() > 0)
-    {
-        if (keyboard.isPressed(Input::Key::SPACE))
-        {
-            playerBody.applyForce(glm::vec2(0.0f, PLAYER_JUMP_FORCE));
-        }
-    }
 }
 
 void Player::switchGun(GunType gunType)

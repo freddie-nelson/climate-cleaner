@@ -139,6 +139,11 @@ void Bullet::callback(const Physics::ContactInfo &contactInfo)
         return;
     }
 
+    if (!registry.has<Physics::RigidBody2D>(m_entity))
+    {
+        return;
+    }
+
     auto &body = registry.get<Physics::RigidBody2D>(m_entity);
 
     if (registry.has<EnemyTag>(contactInfo.entityB))
