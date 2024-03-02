@@ -1,5 +1,6 @@
 #include "../include/Bee.h"
 #include "../include/HelperEntities.h"
+#include "../include/Layers.h"
 
 #include <remi/Physics/RigidBody2d.h>
 #include <remi/Physics/Collider2d.h>
@@ -40,6 +41,7 @@ void Bee::fixedUpdate(World::World &world, const Core::Timestep &timestep)
         }
 
         material.setColor(m_freezeTimer > 0 ? BEE_FREEZE_COLOR : BEE_COLOR);
+        return;
     }
 
     moveEnemy(world, timestep);
@@ -81,8 +83,10 @@ void Bee::makeEnemy()
     auto &sceneGraph = world.getSceneGraph();
 
     m_enemy = registry.create();
-    registry.add<Core::Transform>(m_enemy, Core::Transform(m_startPos));
+    auto &t = registry.add<Core::Transform>(m_enemy, Core::Transform(m_startPos));
     registry.add<EnemyTag>(m_enemy, EnemyTag{this});
+
+    t.setZIndex(ENEMY_LAYER);
 
     auto &mesh = registry.add<Rendering::Mesh2D>(m_enemy, Rendering::Mesh2D(BEE_WIDTH, BEE_HEIGHT));
     auto &material = registry.add<Rendering::Material>(m_enemy, Rendering::Material(m_color));

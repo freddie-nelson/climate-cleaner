@@ -2,6 +2,7 @@
 #include "include/Floor.h"
 #include "include/WizardNpc.h"
 #include "include/EnemySpawner.h"
+#include "include/PowerUpSpawner.h"
 
 #include <remi/Engine.h>
 #include <remi/Rendering/Texture/TextureAtlas.h>
@@ -17,13 +18,19 @@ int main()
     remi::Engine engine(config);
 
     auto &renderer = *engine.getRenderer();
-    renderer.setClearColor(Rendering::Color(0, 0.5f, 0.0f, 1.0f));
+    renderer.setClearColor(Rendering::Color(1.0f, 0.76f, 0.86f, 1.0f));
 
     // create player
     Player player(engine);
 
-    // create wizard npc
+    // create enemy spawner
     EnemySpawner spawner(engine, player.getEntity());
+
+    // create floor
+    Floor floor(engine, player.getEntity());
+
+    // create power up spawner
+    PowerUpSpawner powerUpSpawner(engine, player, floor);
 
     // run engine
     engine.run();

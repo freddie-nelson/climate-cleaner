@@ -17,7 +17,7 @@ struct HealthBarTag
 class HealthBar : public World::System
 {
 public:
-    HealthBar(remi::Engine &engine, ECS::Entity owner, glm::vec2 position, glm::vec2 scale = glm::vec2(1));
+    HealthBar(remi::Engine &engine, ECS::Entity owner, glm::vec2 position, glm::vec2 scale = glm::vec2(1), bool alwaysVisible = false, Rendering::Color backgroundColor = HEALTH_BAR_BACKGROUND_COLOR, Rendering::Color barColor = HEALTH_BAR_COLOR);
 
     void fixedUpdate(World::World &world, const Core::Timestep &timestep) override;
 
@@ -25,6 +25,10 @@ private:
     remi::Engine &m_engine;
     ECS::Entity m_owner;
 
+    bool m_alwaysVisible = false;
+
     ECS::Entity m_container;
     ECS::Entity m_bar;
+
+    void updateVisibility();
 };

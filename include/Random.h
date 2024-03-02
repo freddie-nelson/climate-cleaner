@@ -2,7 +2,7 @@
 
 #include <random>
 
-float randomFloat(float min, float max)
+inline float randomFloat(float min, float max)
 {
     static std::random_device rd;
     static std::mt19937 gen(rd());
@@ -12,7 +12,7 @@ float randomFloat(float min, float max)
     return dis(gen);
 }
 
-int randomInt(int min, int max)
+inline int randomInt(int min, int max)
 {
     static std::random_device rd;
     static std::mt19937 gen(rd());

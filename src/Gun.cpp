@@ -1,4 +1,5 @@
 #include "../include/Gun.h"
+#include "../include/Layers.h"
 
 #include <remi/Rendering/Mesh/Mesh.h>
 #include <remi/Rendering/Renderable.h>
@@ -59,20 +60,28 @@ void Gun::makeGun()
     m_gunExists = true;
 
     m_gun = registry.create();
-    registry.add(m_gun, Core::Transform());
+    auto &t = registry.add(m_gun, Core::Transform());
     registry.add(m_gun, Rendering::Mesh2D(getWidth(), getHeight()));
-    registry.add(m_gun, Rendering::Material(Rendering::Color(0.5f, 0.5f, 0.5f, 1.0f), getGunTexture()));
+    registry.add(m_gun, Rendering::Material(getGunTexture()));
     registry.add(m_gun, Rendering::Renderable(true, false));
+
+    t.setZIndex(GUN_LAYER);
 
     sceneGraph.relate(m_holder, m_gun);
 }
 
 void Gun::destroyGun()
 {
+    if (!m_gunExists)
+    {
+        return;
+    }
+
     auto &world = *m_engine.getWorld();
     auto &registry = world.getRegistry();
 
     registry.destroy(m_gun);
+    m_gunExists = false;
 }
 
 void Gun::updateGun(const Core::Timestep &timestep)
@@ -144,7 +153,7 @@ void Gun::makeCrosshair()
     registry.add(left, Rendering::Material(CROSSHAIR_COLOR));
     registry.add(left, Rendering::Renderable(true, false));
 
-    leftT.setZIndex(Config::MAX_Z_INDEX);
+    leftT.setZIndex(CROSSHAIR_LAYER);
     sceneGraph.relate(m_crosshair, left);
 
     // right
@@ -154,7 +163,7 @@ void Gun::makeCrosshair()
     registry.add(right, Rendering::Material(CROSSHAIR_COLOR));
     registry.add(right, Rendering::Renderable(true, false));
 
-    rightT.setZIndex(Config::MAX_Z_INDEX);
+    rightT.setZIndex(CROSSHAIR_LAYER);
     sceneGraph.relate(m_crosshair, right);
 
     // up
@@ -164,7 +173,7 @@ void Gun::makeCrosshair()
     registry.add(up, Rendering::Material(CROSSHAIR_COLOR));
     registry.add(up, Rendering::Renderable(true, false));
 
-    upT.setZIndex(Config::MAX_Z_INDEX);
+    upT.setZIndex(CROSSHAIR_LAYER);
     sceneGraph.relate(m_crosshair, up);
 
     // down
@@ -174,7 +183,7 @@ void Gun::makeCrosshair()
     registry.add(down, Rendering::Material(CROSSHAIR_COLOR));
     registry.add(down, Rendering::Renderable(true, false));
 
-    downT.setZIndex(Config::MAX_Z_INDEX);
+    downT.setZIndex(CROSSHAIR_LAYER);
     sceneGraph.relate(m_crosshair, down);
 }
 

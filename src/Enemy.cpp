@@ -38,25 +38,22 @@ void Enemy::handleAttack(World::World &world, const Core::Timestep &timestep)
 {
     m_attackTimer -= timestep.getSeconds();
 
-    if (m_attackTimer <= 0)
+    auto &registry = world.getRegistry();
+    auto &sceneGraph = world.getSceneGraph();
+
+    auto enemyTransform = Core::Transform(sceneGraph.getModelMatrix(m_enemy));
+    auto targetTransform = Core::Transform(sceneGraph.getModelMatrix(m_target));
+
+    auto distance = glm::distance(enemyTransform.getTranslation(), targetTransform.getTranslation());
+
+    if (distance <= m_attackRange && m_attackTimer <= 0)
     {
         m_attackTimer = m_attackCooldown;
 
-        auto &registry = world.getRegistry();
-        auto &sceneGraph = world.getSceneGraph();
-
-        auto enemyTransform = Core::Transform(sceneGraph.getModelMatrix(m_enemy));
-        auto targetTransform = Core::Transform(sceneGraph.getModelMatrix(m_target));
-
-        auto distance = glm::distance(enemyTransform.getTranslation(), targetTransform.getTranslation());
-
-        if (distance <= m_attackRange)
+        if (registry.has<PlayerTag>(m_target))
         {
-            if (registry.has<PlayerTag>(m_target))
-            {
-                auto &player = *registry.get<PlayerTag>(m_target).player;
-                player.takeDamage(m_attackDamage);
-            }
+            auto &player = *registry.get<PlayerTag>(m_target).player;
+            player.takeDamage(m_attackDamage);
         }
     }
 }

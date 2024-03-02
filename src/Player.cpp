@@ -1,5 +1,6 @@
 #include "../include/Player.h"
 #include "../include/HelperEntities.h"
+#include "../include/Layers.h"
 
 #include <remi/Rendering/Camera/Camera.h>
 #include <remi/Rendering/Camera/ActiveCamera.h>
@@ -31,16 +32,20 @@ Player::Player(remi::Engine &engine, glm::vec2 position) : m_engine(engine)
 
     // create player sprite
     m_sprite = registry.create();
-    registry.add(m_sprite, Core::Transform());
+    auto &spriteT = registry.add(m_sprite, Core::Transform());
     registry.add(m_sprite, Rendering::Mesh2D(PLAYER_WIDTH, PLAYER_HEIGHT));
     registry.add(m_sprite, Rendering::Material(&m_texture));
     registry.add(m_sprite, Rendering::Renderable(true, false));
 
+    spriteT.setZIndex(PLAYER_LAYER);
+
     // create camera
     m_camera = registry.create();
-    registry.add(m_camera, Core::Transform());
+    auto &cameraT = registry.add(m_camera, Core::Transform());
     registry.add(m_camera, Rendering::Camera(engine.getRenderer()->getSize().x, engine.getRenderer()->getSize().y));
     registry.add(m_camera, Rendering::ActiveCamera());
+
+    cameraT.scale(CAMERA_SCALE);
 
     // child camera and sprite to player
     sceneGraph.relate(m_player, m_camera);
@@ -48,11 +53,11 @@ Player::Player(remi::Engine &engine, glm::vec2 position) : m_engine(engine)
 
     world.addSystem(this);
 
-    switchGun(GunType::FREEZE_GUN);
+    switchGun(GunType::GUN);
 
     registry.add(m_player, HealthBarTag{PLAYER_HEALTH, PLAYER_HEALTH});
 
-    m_healthBar = new HealthBar(engine, m_player, glm::vec2(0, PLAYER_HEIGHT / 2), glm::vec2(1.25f, 1.0f));
+    m_healthBar = new HealthBar(engine, m_player, glm::vec2(0, PLAYER_HEIGHT / 2), glm::vec2(1.25f, 1.0f), true);
 
     m_shadow = createShadow(world, m_player, PLAYER_SHADOW_POSITION, PLAYER_WIDTH / 2.0f, PLAYER_SHADOW_SCALE);
 }
@@ -101,6 +106,19 @@ void Player::takeDamage(float damage)
     {
         std::cout << "Player died" << std::endl;
     }
+}
+
+void Player::heal(float amount)
+{
+    m_health += amount;
+
+    if (m_health > PLAYER_HEALTH)
+    {
+        m_health = PLAYER_HEALTH;
+    }
+
+    auto &healthBarTag = m_engine.getWorld()->getRegistry().get<HealthBarTag>(m_player);
+    healthBarTag.health = m_health;
 }
 
 void Player::handleMovement(World::World &world, const Core::Timestep &timestep)

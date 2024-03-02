@@ -1,5 +1,6 @@
 #include "../include/Bullet.h"
 #include "../include/Enemy.h"
+#include "../include/Layers.h"
 
 #include <stdexcept>
 #include <remi/Physics/RigidBody2D.h>
@@ -23,6 +24,7 @@ Bullet::Bullet(remi::Engine &engine, glm::vec2 position, glm::vec2 direction, fl
 
     auto &transform = registry.add(m_entity, Core::Transform(position));
     transform.setRotation(glm::atan(direction.y, direction.x));
+    transform.setZIndex(BULLET_LAYER);
 
     auto colliderShape = Physics::PolygonColliderShape2D(Rendering::Mesh2D(BULLET_WIDTH, BULLET_HEIGHT));
     auto &collider = registry.add(m_entity, Physics::Collider2D(&colliderShape));

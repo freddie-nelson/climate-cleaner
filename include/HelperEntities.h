@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Layers.h"
+
 #include <remi/ECS/Entity.h>
 #include <remi/World/World.h>
 #include <remi/Core/Transform.h>
@@ -15,6 +17,7 @@ inline ECS::Entity createShadow(World::World &world, ECS::Entity owner, glm::vec
     auto shadow = registry.create();
     auto &shadowT = registry.add(shadow, Core::Transform(position));
     shadowT.setScale(scale);
+    shadowT.setZIndex(SHADOW_LAYER);
 
     registry.add(shadow, Rendering::Mesh2D(radius, 32u));
     registry.add(shadow, Rendering::Material(color));

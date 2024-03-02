@@ -17,8 +17,8 @@ private:
     double m_spawnTimer = 0.0;
     double m_lastBeeSpawn = 0.0;
 
-    float m_minSpawnRadius = 5.0f;
-    float m_maxSpawnRadius = 10.0f;
+    float m_minSpawnRadius = 6.0f;
+    float m_maxSpawnRadius = 12.0f;
 
     remi::Engine &m_engine;
     ECS::Entity m_target;

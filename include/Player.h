@@ -20,6 +20,7 @@
 #define PLAYER_HIT_DURATION 0.1f
 #define PLAYER_SHADOW_POSITION glm::vec2(0, -PLAYER_HEIGHT * 0.55f)
 #define PLAYER_SHADOW_SCALE glm::vec2(0.5f, 0.2f)
+#define CAMERA_SCALE 1.1f
 
 class Player : public World::System
 {
@@ -33,6 +34,8 @@ public:
     ECS::Entity getEntity() const { return m_player; }
 
     void takeDamage(float damage);
+
+    void heal(float amount);
 
 private:
     remi::Engine &m_engine;

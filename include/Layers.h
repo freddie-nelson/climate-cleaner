@@ -1,0 +1,11 @@
+#pragma once
+
+#define FLOOR_LAYER 0
+#define PLAYER_LAYER 10
+#define BULLET_LAYER 15
+#define GUN_LAYER 20
+#define ENEMY_LAYER 10
+#define CROSSHAIR_LAYER 100
+#define SHADOW_LAYER 1
+#define HEALTHBAR_LAYER 25
+#define POWERUP_LAYER 5
