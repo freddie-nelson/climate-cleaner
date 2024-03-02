@@ -3,8 +3,8 @@
 
 #include <remi/Physics/RigidBody2d.h>
 
-Enemy::Enemy(remi::Engine &engine, ECS::Entity target, glm::vec2 position)
-    : m_engine(engine), m_target(target), m_startPos(position)
+Enemy::Enemy(remi::Engine &engine, ECS::Entity target, glm::vec2 position, int wave)
+    : m_engine(engine), m_target(target), m_startPos(position), m_wave(wave)
 {
     auto &world = *m_engine.getWorld();
     world.addSystem(this);
@@ -53,7 +53,7 @@ void Enemy::handleAttack(World::World &world, const Core::Timestep &timestep)
         if (registry.has<PlayerTag>(m_target))
         {
             auto &player = *registry.get<PlayerTag>(m_target).player;
-            player.takeDamage(m_attackDamage);
+            player.takeDamage(m_attackDamage + (m_attackDamage * m_wave * 0.1f));
         }
     }
 }

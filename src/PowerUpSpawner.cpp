@@ -3,9 +3,11 @@
 #include "../include/HealthPowerUp.h"
 #include "../include/RocketLauncherPowerUp.h"
 #include "../include/FreezeGunPowerUp.h"
+#include "../include/DoubleBarrelPowerUp.h"
+#include "../include/FastFirePowerUp.h"
 
-PowerUpSpawner::PowerUpSpawner(remi::Engine &engine, Player &player, const Floor &floor)
-    : m_engine(engine), m_player(player), m_floor(floor)
+PowerUpSpawner::PowerUpSpawner(remi::Engine &engine, Player &player, const Floor &floor, EnemySpawner &enemySpawner)
+    : m_engine(engine), m_player(player), m_floor(floor), m_enemySpawner(enemySpawner)
 {
     auto &world = *m_engine.getWorld();
     world.addSystem(this);
@@ -19,7 +21,11 @@ void PowerUpSpawner::update(World::World &world, const Core::Timestep &timestep)
     if (m_spawnTimer <= 0.0f)
     {
         spawnPowerUp();
-        m_spawnTimer = m_spawnTime;
+        m_spawnTimer = m_spawnTime - (m_spawnTime * m_enemySpawner.getWave() * 0.015f);
+        if (m_spawnTimer < 1.0f)
+        {
+            m_spawnTimer = 1.0f;
+        }
     }
 
     // update power ups
@@ -152,6 +158,14 @@ PowerUpType PowerUpSpawner::getRandomPowerUpType()
     {
         return PowerUpType::ROCKET_LAUNCHER_POWERUP;
     }
+    else if (i <= 45)
+    {
+        return PowerUpType::DOUBLE_BARREL_POWERUP;
+    }
+    else if (i <= 60)
+    {
+        return PowerUpType::FAST_FIRE_POWERUP;
+    }
     else
     {
         return PowerUpType::FREEZE_GUN_POWERUP;
@@ -161,7 +175,8 @@ PowerUpType PowerUpSpawner::getRandomPowerUpType()
 PowerUp *PowerUpSpawner::createPowerUp(PowerUpType type)
 {
     auto position = getRandomPosition();
-    auto timeToLive = randomFloat(m_spawnTime * 0.5f, m_spawnTime * 1.5f);
+    auto timeToLive = m_powerUpTime;
+    // auto timeToLive = randomFloat(15.0f, 30.0f);
 
     switch (type)
     {
@@ -171,6 +186,10 @@ PowerUp *PowerUpSpawner::createPowerUp(PowerUpType type)
         return new FreezeGunPowerUp(m_engine, position, timeToLive);
     case PowerUpType::ROCKET_LAUNCHER_POWERUP:
         return new RocketLauncherPowerUp(m_engine, position, timeToLive);
+    case PowerUpType::DOUBLE_BARREL_POWERUP:
+        return new DoubleBarrelPowerUp(m_engine, position, timeToLive);
+    case PowerUpType::FAST_FIRE_POWERUP:
+        return new FastFirePowerUp(m_engine, position, timeToLive);
     default:
         return nullptr;
     }

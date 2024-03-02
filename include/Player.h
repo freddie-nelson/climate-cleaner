@@ -37,6 +37,8 @@ public:
 
     void heal(float amount);
 
+    Gun *getGun() const { return m_gun; }
+
 private:
     remi::Engine &m_engine;
 

@@ -6,8 +6,6 @@
 #include <remi/Rendering/Texture/Texture.h>
 
 #define GUN_POSITION glm::vec2(PLAYER_WIDTH / 2.0f, 0.0f);
-#define GUN_FIRE_RATE 0.15f
-#define GUN_BULLETS 1
 #define GUN_BULLET_SPREAD 0.2f
 #define GUN_BARREL_OFFSET 0.1f
 
@@ -46,6 +44,9 @@ public:
 
     void switchGun(GunType gunType);
 
+    void setBulletMultiplier(unsigned int multiplier);
+    void setFireRateMultiplier(float multiplier);
+
 private:
     remi::Engine &m_engine;
     ECS::Entity m_holder;
@@ -56,6 +57,9 @@ private:
     bool m_gunExists = false;
     ECS::Entity m_gun;
     float m_fireTimer = 0.0f;
+
+    unsigned int m_bulletMultiplier = 1;
+    float m_fireRateMultiplier = 1.0f;
 
     bool m_crosshairExists = false;
     ECS::Entity m_crosshair;
@@ -79,4 +83,7 @@ private:
 
     float getWidth();
     float getHeight();
+
+    unsigned int getBullets();
+    float getFireRate();
 };

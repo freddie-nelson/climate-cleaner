@@ -12,8 +12,13 @@ public:
 
     void fixedUpdate(World::World &world, const Core::Timestep &timestep) override;
 
+    int getWave() const { return m_wave; }
+
 private:
-    int m_wave = 0;
+    int m_wave = 20;
+    double m_waveTimer = 0.0;
+    double m_waveDuration = 30.0;
+
     double m_spawnTimer = 0.0;
     double m_lastBeeSpawn = 0.0;
 

@@ -10,8 +10,8 @@
 
 Rendering::Texture Bee::texture = Rendering::Texture("assets/images/bee.png");
 
-Bee::Bee(remi::Engine &engine, ECS::Entity target, glm::vec2 position)
-    : Enemy(engine, target, position)
+Bee::Bee(remi::Engine &engine, ECS::Entity target, glm::vec2 position, int wave)
+    : Enemy(engine, target, position, wave)
 {
     makeEnemy();
 }
@@ -129,9 +129,11 @@ void Bee::moveEnemy(World::World &world, const Core::Timestep &timestep)
     body.applyForce(direction * BEE_MOVE_FORCE);
 
     auto velocity = body.getVelocity();
-    if (glm::length(velocity) > BEE_SPEED)
+    auto speed = BEE_SPEED + (BEE_SPEED * m_wave * 0.025f);
+
+    if (glm::length(velocity) > speed)
     {
-        body.setVelocity(glm::normalize(velocity) * BEE_SPEED);
+        body.setVelocity(glm::normalize(velocity) * speed);
     }
 
     if (direction.x < 0)

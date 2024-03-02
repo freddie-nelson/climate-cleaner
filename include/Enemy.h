@@ -5,7 +5,7 @@
 class Enemy : public World::System
 {
 public:
-    Enemy(remi::Engine &engine, ECS::Entity target, glm::vec2 position = glm::vec2(0));
+    Enemy(remi::Engine &engine, ECS::Entity target, glm::vec2 position = glm::vec2(0), int wave = 1);
 
     virtual void fixedUpdate(World::World &world, const Core::Timestep &timestep) override = 0;
 
@@ -30,6 +30,7 @@ protected:
     remi::Engine &m_engine;
     ECS::Entity m_target;
     glm::vec2 m_startPos;
+    int m_wave;
 
     float m_attackTimer = 0.0f;
     float m_attackCooldown = 1.0f;

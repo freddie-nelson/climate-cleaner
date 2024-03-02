@@ -46,6 +46,16 @@ void Gun::switchGun(GunType gunType)
     makeGun();
 }
 
+void Gun::setBulletMultiplier(unsigned int multiplier)
+{
+    m_bulletMultiplier = multiplier;
+}
+
+void Gun::setFireRateMultiplier(float multiplier)
+{
+    m_fireRateMultiplier = multiplier;
+}
+
 void Gun::makeGun()
 {
     auto &world = *m_engine.getWorld();
@@ -117,11 +127,11 @@ void Gun::updateGun(const Core::Timestep &timestep)
 
     gunTransform.setTranslation(glm::vec2(holderToMouseDir * m_holderHeight * 0.65f));
 
-    if (mouse.isPressed(Input::MouseButton::LEFT) && m_fireTimer >= GUN_FIRE_RATE)
+    if (mouse.isPressed(Input::MouseButton::LEFT) && m_fireTimer >= getFireRate())
     {
-        auto totalSpread = (GUN_BULLETS - 1) * GUN_BULLET_SPREAD;
+        auto totalSpread = (getBullets() - 1) * GUN_BULLET_SPREAD;
 
-        for (size_t i = 0; i < GUN_BULLETS; i++)
+        for (size_t i = 0; i < getBullets(); i++)
         {
             auto offset = (normal * (i * GUN_BULLET_SPREAD)) - (normal * totalSpread / 2.0f);
             auto bullet = new Bullet(m_engine, Core::Transform(sceneGraph.getModelMatrix(m_gun)).getTranslation() + offset + barrelOffset + (holderToMouseDir * getWidth() * 0.4f), holderToMouseDir, BULLET_SPEED, BULLET_LIFETIME, m_gunType == GUN ? BULLET : m_gunType == FREEZE_GUN ? FREEZE_BULLET
@@ -285,4 +295,48 @@ float Gun::getHeight()
     default:
         throw std::runtime_error("gun type not implemented");
     }
+}
+
+unsigned int Gun::getBullets()
+{
+    unsigned int bullets;
+
+    switch (m_gunType)
+    {
+    case GunType::GUN:
+        bullets = 1;
+        break;
+    case GunType::FREEZE_GUN:
+        bullets = 1;
+        break;
+    case GunType::ROCKET_LAUNCHER:
+        bullets = 1;
+        break;
+    default:
+        throw std::runtime_error("gun type not implemented");
+    }
+
+    return bullets * m_bulletMultiplier;
+}
+
+float Gun::getFireRate()
+{
+    float fireRate;
+
+    switch (m_gunType)
+    {
+    case GunType::GUN:
+        fireRate = 0.1f;
+        break;
+    case GunType::FREEZE_GUN:
+        fireRate = 0.1f;
+        break;
+    case GunType::ROCKET_LAUNCHER:
+        fireRate = 0.3f;
+        break;
+    default:
+        throw std::runtime_error("gun type not implemented");
+    }
+
+    return fireRate * m_fireRateMultiplier;
 }

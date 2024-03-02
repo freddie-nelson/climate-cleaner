@@ -30,7 +30,7 @@ int main()
     Floor floor(engine, player.getEntity());
 
     // create power up spawner
-    PowerUpSpawner powerUpSpawner(engine, player, floor);
+    PowerUpSpawner powerUpSpawner(engine, player, floor, spawner);
 
     // run engine
     engine.run();

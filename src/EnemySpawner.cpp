@@ -14,6 +14,14 @@ EnemySpawner::EnemySpawner(remi::Engine &engine, ECS::Entity target)
 
 void EnemySpawner::fixedUpdate(World::World &world, const Core::Timestep &timestep)
 {
+    m_waveTimer += timestep.getSeconds();
+    if (m_waveTimer >= m_waveDuration)
+    {
+        m_waveTimer = 0.0;
+        m_wave++;
+        std::cout << "Wave: " << m_wave << std::endl;
+    }
+
     m_spawnTimer += timestep.getSeconds();
 
     spawnBee(world, timestep);
@@ -50,12 +58,18 @@ void EnemySpawner::spawnBee(World::World &world, const Core::Timestep &timestep)
     auto transform = Core::Transform(sceneGraph.getModelMatrix(m_target));
 
     m_lastBeeSpawn = m_spawnTimer;
-    m_enemies.emplace(new Bee(m_engine, m_target, glm::vec2(x, y) + transform.getTranslation()));
+    m_enemies.emplace(new Bee(m_engine, m_target, glm::vec2(x, y) + transform.getTranslation(), m_wave));
 
     // std::cout << "Spawned bee at (" << x << ", " << y << ")" << std::endl;
 }
 
 double EnemySpawner::getBeeSpawnRate()
 {
-    return 1.0;
+    auto spawnRate = 1.0 - (m_wave * 0.05);
+    if (spawnRate < 0.5)
+    {
+        spawnRate = 0.5;
+    }
+
+    return spawnRate;
 }

@@ -21,7 +21,7 @@
 class Bee : public Enemy
 {
 public:
-    Bee(remi::Engine &engine, ECS::Entity target, glm::vec2 position = glm::vec2(0));
+    Bee(remi::Engine &engine, ECS::Entity target, glm::vec2 position = glm::vec2(0), int wave = 1);
 
     void fixedUpdate(World::World &world, const Core::Timestep &timestep) override;
 
