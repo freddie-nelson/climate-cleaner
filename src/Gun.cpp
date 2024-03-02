@@ -60,7 +60,7 @@ void Gun::makeGun()
 
     m_gun = registry.create();
     registry.add(m_gun, Core::Transform());
-    registry.add(m_gun, Rendering::Mesh2D(GUN_WIDTH, GUN_HEIGHT));
+    registry.add(m_gun, Rendering::Mesh2D(getWidth(), getHeight()));
     registry.add(m_gun, Rendering::Material(Rendering::Color(0.5f, 0.5f, 0.5f, 1.0f), getGunTexture()));
     registry.add(m_gun, Rendering::Renderable(true, false));
 
@@ -115,8 +115,8 @@ void Gun::updateGun(const Core::Timestep &timestep)
         for (size_t i = 0; i < GUN_BULLETS; i++)
         {
             auto offset = (normal * (i * GUN_BULLET_SPREAD)) - (normal * totalSpread / 2.0f);
-            auto bullet = new Bullet(m_engine, Core::Transform(sceneGraph.getModelMatrix(m_gun)).getTranslation() + offset + barrelOffset, holderToMouseDir, BULLET_SPEED, BULLET_LIFETIME, m_gunType == GUN ? BULLET : m_gunType == FREEZE_GUN ? FREEZE_BULLET
-                                                                                                                                                                                                                                                : EXPLODING_BULLET);
+            auto bullet = new Bullet(m_engine, Core::Transform(sceneGraph.getModelMatrix(m_gun)).getTranslation() + offset + barrelOffset + (holderToMouseDir * getWidth() * 0.4f), holderToMouseDir, BULLET_SPEED, BULLET_LIFETIME, m_gunType == GUN ? BULLET : m_gunType == FREEZE_GUN ? FREEZE_BULLET
+                                                                                                                                                                                                                                                                                         : EXPLODING_BULLET);
         }
 
         m_fireTimer = 0.0f;
@@ -239,6 +239,40 @@ Rendering::Texture *Gun::getGunTexture()
     {
     case GunType::GUN:
         return &m_gunTexture;
+    case GunType::FREEZE_GUN:
+        return &m_freezeTexture;
+    case GunType::ROCKET_LAUNCHER:
+        return &m_rocketTexture;
+    default:
+        throw std::runtime_error("gun type not implemented");
+    }
+}
+
+float Gun::getWidth()
+{
+    switch (m_gunType)
+    {
+    case GunType::GUN:
+        return 0.4f;
+    case GunType::FREEZE_GUN:
+        return 0.8f;
+    case GunType::ROCKET_LAUNCHER:
+        return 1.2f;
+    default:
+        throw std::runtime_error("gun type not implemented");
+    }
+}
+
+float Gun::getHeight()
+{
+    switch (m_gunType)
+    {
+    case GunType::GUN:
+        return 0.4f;
+    case GunType::FREEZE_GUN:
+        return 0.8f;
+    case GunType::ROCKET_LAUNCHER:
+        return 1.2f;
     default:
         throw std::runtime_error("gun type not implemented");
     }

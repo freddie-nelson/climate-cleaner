@@ -107,6 +107,11 @@ void Bee::makeEnemy()
 
 void Bee::moveEnemy(World::World &world, const Core::Timestep &timestep)
 {
+    if (m_frozen)
+    {
+        return;
+    }
+
     auto &registry = world.getRegistry();
     auto &sceneGraph = world.getSceneGraph();
 

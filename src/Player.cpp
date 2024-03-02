@@ -48,7 +48,7 @@ Player::Player(remi::Engine &engine, glm::vec2 position) : m_engine(engine)
 
     world.addSystem(this);
 
-    switchGun(GunType::GUN);
+    switchGun(GunType::FREEZE_GUN);
 
     registry.add(m_player, HealthBarTag{PLAYER_HEALTH, PLAYER_HEALTH});
 
