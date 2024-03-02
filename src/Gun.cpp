@@ -30,11 +30,11 @@ Gun::~Gun()
 
 void Gun::update(World::World &world, const Core::Timestep &timestep)
 {
-    updateCrosshair();
 }
 
 void Gun::fixedUpdate(World::World &world, const Core::Timestep &timestep)
 {
+    updateCrosshair();
     updateGun(timestep);
 }
 

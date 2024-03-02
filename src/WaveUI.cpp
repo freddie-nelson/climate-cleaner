@@ -50,9 +50,10 @@ void WaveUI::updateWaveText()
     auto &world = *m_engine.getWorld();
     auto &registry = world.getRegistry();
     auto &spaceTransformer = *m_engine.getSpaceTransformer();
+    auto &renderer = *m_engine.getRenderer();
 
     auto &camera = registry.get<Rendering::Camera>(m_activeCamera);
-    auto viewport = camera.getViewportSize();
+    auto viewport = renderer.getWindowSize();
 
     if (m_lastWave != m_spawner.getWave())
     {
