@@ -39,6 +39,8 @@ public:
 
     Gun *getGun() const { return m_gun; }
 
+    bool isDead() const { return m_health <= 0; }
+
 private:
     remi::Engine &m_engine;
 

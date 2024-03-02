@@ -3,17 +3,20 @@
 #include "../include/EnemySpawner.h"
 #include "../include/Random.h"
 
-EnemySpawner::EnemySpawner(remi::Engine &engine, ECS::Entity target)
+EnemySpawner::EnemySpawner(remi::Engine &engine, Player &target)
     : m_engine(engine), m_target(target)
 {
     auto &world = *m_engine.getWorld();
     world.addSystem(this);
-
-    srand(time(NULL));
 }
 
 void EnemySpawner::fixedUpdate(World::World &world, const Core::Timestep &timestep)
 {
+    if (m_target.isDead())
+    {
+        return;
+    }
+
     m_waveTimer += timestep.getSeconds();
     if (m_waveTimer >= m_waveDuration)
     {
@@ -55,10 +58,10 @@ void EnemySpawner::spawnBee(World::World &world, const Core::Timestep &timestep)
 
     auto &registry = world.getRegistry();
     auto &sceneGraph = world.getSceneGraph();
-    auto transform = Core::Transform(sceneGraph.getModelMatrix(m_target));
+    auto transform = Core::Transform(sceneGraph.getModelMatrix(m_target.getEntity()));
 
     m_lastBeeSpawn = m_spawnTimer;
-    m_enemies.emplace(new Bee(m_engine, m_target, glm::vec2(x, y) + transform.getTranslation(), m_wave));
+    m_enemies.emplace(new Bee(m_engine, m_target.getEntity(), glm::vec2(x, y) + transform.getTranslation(), m_wave));
 
     // std::cout << "Spawned bee at (" << x << ", " << y << ")" << std::endl;
 }

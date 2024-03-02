@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Bee.h"
+#include "Player.h"
 
 #include <remi/Engine.h>
 #include <unordered_set>
@@ -8,7 +9,7 @@
 class EnemySpawner : public World::System
 {
 public:
-    EnemySpawner(remi::Engine &engine, ECS::Entity target);
+    EnemySpawner(remi::Engine &engine, Player &target);
 
     void fixedUpdate(World::World &world, const Core::Timestep &timestep) override;
 
@@ -26,7 +27,7 @@ private:
     float m_maxSpawnRadius = 12.0f;
 
     remi::Engine &m_engine;
-    ECS::Entity m_target;
+    Player &m_target;
 
     std::unordered_set<Enemy *> m_enemies;
 

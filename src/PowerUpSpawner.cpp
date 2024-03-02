@@ -15,6 +15,11 @@ PowerUpSpawner::PowerUpSpawner(remi::Engine &engine, Player &player, const Floor
 
 void PowerUpSpawner::update(World::World &world, const Core::Timestep &timestep)
 {
+    if (m_player.isDead())
+    {
+        return;
+    }
+
     m_spawnTimer -= timestep.getSeconds();
 
     // spawn power ups

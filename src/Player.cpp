@@ -64,6 +64,18 @@ Player::Player(remi::Engine &engine, glm::vec2 position) : m_engine(engine)
 
 void Player::fixedUpdate(World::World &world, const Core::Timestep &timestep)
 {
+    if (isDead())
+    {
+        auto &registry = world.getRegistry();
+        auto &material = registry.get<Rendering::Material>(m_sprite);
+        material.setColor(PLAYER_HIT_COLOR);
+
+        delete m_gun;
+        m_gun = nullptr;
+
+        return;
+    }
+
     handleMovement(world, timestep);
 
     // material
@@ -104,7 +116,7 @@ void Player::takeDamage(float damage)
 
     if (m_health <= 0)
     {
-        std::cout << "Player died" << std::endl;
+        m_health = 0;
     }
 }
 

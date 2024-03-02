@@ -88,6 +88,7 @@ src = [
     'src/FreezeGunPowerUp.cpp', 
     'src/RocketLauncherPowerUp.cpp', 
     'src/WaveUI.cpp',
+    'src/DeathScreen.cpp',
     'main.cpp'
 ]
 

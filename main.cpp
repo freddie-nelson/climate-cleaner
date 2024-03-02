@@ -4,6 +4,7 @@
 #include "include/EnemySpawner.h"
 #include "include/PowerUpSpawner.h"
 #include "include/WaveUI.h"
+#include "include/DeathScreen.h"
 
 #include <remi/Engine.h>
 #include <remi/Rendering/Texture/TextureAtlas.h>
@@ -25,7 +26,7 @@ int main()
     Player player(engine);
 
     // create enemy spawner
-    EnemySpawner spawner(engine, player.getEntity());
+    EnemySpawner spawner(engine, player);
 
     // create floor
     Floor floor(engine, player.getEntity());
@@ -33,7 +34,11 @@ int main()
     // create power up spawner
     PowerUpSpawner powerUpSpawner(engine, player, floor, spawner);
 
+    // create wave ui
     WaveUI waveUI(engine, spawner);
+
+    // create death screen
+    DeathScreen deathScreen(engine, player, spawner);
 
     // run engine
     engine.run();

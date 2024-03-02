@@ -38,7 +38,7 @@ protected:
 
     Rendering::Color m_color = BEE_COLOR;
 
-    float m_attackRange = 1.35f;
+    float m_attackRange = 1.5f;
 
     float m_freezeTimer = 0.0f;
     float m_health = BEE_HEALTH;
