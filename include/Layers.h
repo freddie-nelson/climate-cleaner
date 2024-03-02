@@ -9,3 +9,4 @@
 #define SHADOW_LAYER 1
 #define HEALTHBAR_LAYER 25
 #define POWERUP_LAYER 5
+#define WAVEUI_LAYER 110

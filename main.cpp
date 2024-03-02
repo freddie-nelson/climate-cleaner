@@ -3,6 +3,7 @@
 #include "include/WizardNpc.h"
 #include "include/EnemySpawner.h"
 #include "include/PowerUpSpawner.h"
+#include "include/WaveUI.h"
 
 #include <remi/Engine.h>
 #include <remi/Rendering/Texture/TextureAtlas.h>
@@ -31,6 +32,8 @@ int main()
 
     // create power up spawner
     PowerUpSpawner powerUpSpawner(engine, player, floor, spawner);
+
+    WaveUI waveUI(engine, spawner);
 
     // run engine
     engine.run();

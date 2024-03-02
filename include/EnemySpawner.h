@@ -15,7 +15,7 @@ public:
     int getWave() const { return m_wave; }
 
 private:
-    int m_wave = 20;
+    int m_wave = 1;
     double m_waveTimer = 0.0;
     double m_waveDuration = 30.0;
 
