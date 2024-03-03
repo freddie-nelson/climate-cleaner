@@ -6,6 +6,8 @@
 #include "../include/DoubleBarrelPowerUp.h"
 #include "../include/FastFirePowerUp.h"
 
+#include <numbers>
+
 PowerUpSpawner::PowerUpSpawner(remi::Engine &engine, Player &player, const Floor &floor, EnemySpawner &enemySpawner)
     : m_engine(engine), m_player(player), m_floor(floor), m_enemySpawner(enemySpawner)
 {

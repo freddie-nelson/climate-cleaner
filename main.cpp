@@ -8,10 +8,11 @@
 
 #include <remi/Engine.h>
 #include <remi/Rendering/Texture/TextureAtlas.h>
+#include <iostream>
 
 int main()
 {
-    Rendering::TextureAtlas::MAX_ATLAS_SIZE = 2048;
+    Rendering::TextureAtlas::MAX_ATLAS_SIZE = 4096;
 
     // create engine
     remi::EngineConfig config;
