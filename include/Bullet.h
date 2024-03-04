@@ -4,7 +4,7 @@
 #include <remi/Physics/RigidBody2D.h>
 
 #define BULLET_WIDTH 0.2f
-#define BULLET_HEIGHT 0.1f
+#define BULLET_HEIGHT 0.2f
 
 #define EXPLODING_BULLET_COLOR Rendering::Color(1.0f, 0.2f, 0.0f, 0.5f)
 #define EXPLODING_BULLET_RADIUS 1.5f
@@ -33,6 +33,10 @@ public:
     void fixedUpdate(World::World &world, const Core::Timestep &timestep);
 
 private:
+    static Rendering::Texture *s_bulletTexture;
+    static Rendering::Texture *s_freezeBulletTexture;
+    static Rendering::Texture *s_explodingBulletTexture;
+
     remi::Engine &m_engine;
 
     ECS::Entity m_entity;
@@ -52,4 +56,10 @@ private:
     float getBulletDamage() const;
 
     float getBulletKnockback() const;
+
+    float getBulletWidth() const;
+
+    float getBulletHeight() const;
+
+    Rendering::Texture *getBulletTexture() const;
 };

@@ -15,6 +15,9 @@ Gun::Gun(remi::Engine &engine, ECS::Entity holder, float holderHeight, GunType g
     makeGun();
     makeCrosshair();
 
+    updateGun(Core::Timestep());
+    updateCrosshair();
+
     auto &world = *m_engine.getWorld();
     world.addSystem(this);
 }
@@ -44,6 +47,8 @@ void Gun::switchGun(GunType gunType)
 
     destroyGun();
     makeGun();
+
+    updateGun(Core::Timestep());
 }
 
 void Gun::setBulletMultiplier(unsigned int multiplier)
@@ -89,8 +94,11 @@ void Gun::destroyGun()
 
     auto &world = *m_engine.getWorld();
     auto &registry = world.getRegistry();
+    auto &sceneGraph = world.getSceneGraph();
 
+    sceneGraph.unrelate(m_gun);
     registry.destroy(m_gun);
+
     m_gunExists = false;
 }
 

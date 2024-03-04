@@ -10,6 +10,10 @@
 #include <remi/Rendering/Renderable.h>
 #include <remi/Core/Transform.h>
 
+Rendering::Texture *Bullet::s_bulletTexture = new Rendering::Texture("assets/images/bullet.png");
+Rendering::Texture *Bullet::s_freezeBulletTexture = new Rendering::Texture("assets/images/freeze-bullet.png");
+Rendering::Texture *Bullet::s_explodingBulletTexture = new Rendering::Texture("assets/images/rocket.png");
+
 Bullet::Bullet(remi::Engine &engine, glm::vec2 position, glm::vec2 direction, float speed, float lifeTime, BulletType bulletType)
     : m_engine(engine), m_bulletType(bulletType), m_lifeTime(lifeTime), m_direction(direction), m_speed(speed)
 {
@@ -18,15 +22,15 @@ Bullet::Bullet(remi::Engine &engine, glm::vec2 position, glm::vec2 direction, fl
     auto &sceneGraph = world.getSceneGraph();
 
     m_entity = registry.create();
-    registry.add(m_entity, Rendering::Mesh2D(BULLET_WIDTH, BULLET_HEIGHT));
-    registry.add(m_entity, Rendering::Material(Rendering::Color(1.0f, 0.0f, 0.0f, 1.0f)));
+    registry.add(m_entity, Rendering::Mesh2D(getBulletWidth(), getBulletHeight()));
+    registry.add(m_entity, Rendering::Material(getBulletTexture()));
     registry.add(m_entity, Rendering::Renderable(true, false));
 
     auto &transform = registry.add(m_entity, Core::Transform(position));
     transform.setRotation(glm::atan(direction.y, direction.x));
     transform.setZIndex(BULLET_LAYER);
 
-    auto colliderShape = Physics::PolygonColliderShape2D(Rendering::Mesh2D(BULLET_WIDTH, BULLET_HEIGHT));
+    auto colliderShape = Physics::PolygonColliderShape2D(Rendering::Mesh2D(getBulletWidth(), getBulletHeight() * 0.5f));
     auto &collider = registry.add(m_entity, Physics::Collider2D(&colliderShape));
 
     auto &body = registry.add(m_entity, Physics::RigidBody2D());
@@ -197,6 +201,51 @@ float Bullet::getBulletKnockback() const
         return 250.0f;
     case EXPLODING_BULLET:
         return 500.0f;
+    default:
+        throw std::runtime_error("Invalid bullet type");
+    }
+}
+
+float Bullet::getBulletWidth() const
+{
+    switch (m_bulletType)
+    {
+    case BULLET:
+        return BULLET_WIDTH;
+    case FREEZE_BULLET:
+        return BULLET_WIDTH;
+    case EXPLODING_BULLET:
+        return BULLET_WIDTH * 3.5f;
+    default:
+        throw std::runtime_error("Invalid bullet type");
+    }
+}
+
+float Bullet::getBulletHeight() const
+{
+    switch (m_bulletType)
+    {
+    case BULLET:
+        return BULLET_HEIGHT;
+    case FREEZE_BULLET:
+        return BULLET_HEIGHT;
+    case EXPLODING_BULLET:
+        return BULLET_HEIGHT * 3.5f;
+    default:
+        throw std::runtime_error("Invalid bullet type");
+    }
+}
+
+Rendering::Texture *Bullet::getBulletTexture() const
+{
+    switch (m_bulletType)
+    {
+    case BULLET:
+        return s_bulletTexture;
+    case FREEZE_BULLET:
+        return s_freezeBulletTexture;
+    case EXPLODING_BULLET:
+        return s_explodingBulletTexture;
     default:
         throw std::runtime_error("Invalid bullet type");
     }

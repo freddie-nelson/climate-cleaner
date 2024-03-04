@@ -24,8 +24,8 @@ private:
 
     float m_spawnChance = 0.5f;
 
-    // float m_spawnTime = 0.005f;
-    float m_spawnTime = 5.0f;
+    float m_spawnTime = 0.005f;
+    // float m_spawnTime = 5.0f;
     float m_powerUpTime = 15.0f;
     float m_spawnTimer = m_spawnTime * 2.0f;
     float m_minSpawnRadius = 3.0f;
